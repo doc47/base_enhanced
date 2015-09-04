@@ -4569,7 +4569,7 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 
 	//check for teamnodmg
 	//NOTE: non-client objects hitting clients (and clients hitting clients) purposely doesn't obey this teamnodmg (for emplaced guns)
-	if ( attacker && !targ->client )
+	if ( attacker && (!targ->client || targ->s.eType == ET_NPC) )
 	{//attacker hit a non-client
 		if ( g_gametype.integer == GT_SIEGE &&
 			!g_ff_objectives.integer )
