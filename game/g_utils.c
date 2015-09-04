@@ -1580,6 +1580,11 @@ qboolean TryHeal(gentity_t *ent, gentity_t *target)
 					target->target_ent->health = target->health;
 					G_ScaleNetHealth(target->target_ent);
 				}
+
+				if ( target->client )
+				{
+					target->client->ps.stats[STAT_HEALTH] = target->health;
+				}
 			}
 
 			//keep them in the healing anim even when the healing debounce is not yet expired
@@ -1725,12 +1730,13 @@ void TryUse( gentity_t *ent )
 		!ent->client->ps.zoomMode)
 	{ //if target is a vehicle then perform appropriate checks
 		Vehicle_t *pVeh = target->m_pVehicle;
+		qboolean used = qfalse;
 
 		if (pVeh->m_pVehicleInfo)
 		{
 			if ( ent->r.ownerNum == target->s.number )
 			{ //user is already on this vehicle so eject him
-				pVeh->m_pVehicleInfo->Eject( pVeh, (bgEntity_t *)ent, qfalse );
+				used = pVeh->m_pVehicleInfo->Eject( pVeh, (bgEntity_t *)ent, qfalse );
 			}
 			else
 			{ // Otherwise board this vehicle.
@@ -1738,69 +1744,77 @@ void TryUse( gentity_t *ent )
 					!target->alliedTeam ||
 					(target->alliedTeam == ent->client->sess.sessionTeam))
 				{ //not belonging to a team, or client is on same team
-					pVeh->m_pVehicleInfo->Board( pVeh, (bgEntity_t *)ent );
+					used = pVeh->m_pVehicleInfo->Board( pVeh, (bgEntity_t *)ent );
 				}
 			}
-			//clear the damn button!
-			ent->client->pers.cmd.buttons &= ~BUTTON_USE;
+
+			if ( used )
+			{
+				//clear the damn button!
+				ent->client->pers.cmd.buttons &= ~BUTTON_USE;
+				return;
+			}		 
+
+		}
+	}
+
+	if ( !target || !target->m_pVehicle || (target->s.NPC_class != CLASS_VEHICLE) )
+	{
+#if 0 //ye olde method
+		if (ent->client->ps.stats[STAT_HOLDABLE_ITEM] > 0 &&
+			bg_itemlist[ent->client->ps.stats[STAT_HOLDABLE_ITEM]].giType == IT_HOLDABLE)
+		{
+			if (bg_itemlist[ent->client->ps.stats[STAT_HOLDABLE_ITEM]].giTag == HI_HEALTHDISP ||
+				bg_itemlist[ent->client->ps.stats[STAT_HOLDABLE_ITEM]].giTag == HI_AMMODISP)
+			{ //has a dispenser item selected
+				if (target && target->client && target->health > 0 && OnSameTeam(ent, target) &&
+					G_CanUseDispOn(target, bg_itemlist[ent->client->ps.stats[STAT_HOLDABLE_ITEM]].giTag))
+				{ //a live target that's on my team, we can use him
+					G_UseDispenserOn(ent, bg_itemlist[ent->client->ps.stats[STAT_HOLDABLE_ITEM]].giTag, target);
+
+					//for now, we will use the standard use anim
+					if (ent->client->ps.torsoAnim == BOTH_BUTTON_HOLD)
+					{ //extend the time
+						ent->client->ps.torsoTimer = 500;
+					}
+					else
+					{
+						G_SetAnim( ent, NULL, SETANIM_TORSO, BOTH_BUTTON_HOLD, SETANIM_FLAG_OVERRIDE|SETANIM_FLAG_HOLD, 0 );
+					}
+					ent->client->ps.weaponTime = ent->client->ps.torsoTimer;
+					return;
+				}
+			}
+		}
+#else  
+		if ( ((ent->client->ps.stats[STAT_HOLDABLE_ITEMS] & (1 << HI_HEALTHDISP)) || (ent->client->ps.stats[STAT_HOLDABLE_ITEMS] & (1 << HI_AMMODISP))) &&
+			target && target->inuse && target->client && target->health > 0 && OnSameTeam(ent, target) &&
+			(G_CanUseDispOn(target, HI_HEALTHDISP) || G_CanUseDispOn(target, HI_AMMODISP)) )
+		{ //a live target that's on my team, we can use him
+			if (G_CanUseDispOn(target, HI_HEALTHDISP))
+			{
+				G_UseDispenserOn(ent, HI_HEALTHDISP, target);
+			}
+			if (G_CanUseDispOn(target, HI_AMMODISP))
+			{
+				G_UseDispenserOn(ent, HI_AMMODISP, target);
+			}
+
+			//for now, we will use the standard use anim
+			if (ent->client->ps.torsoAnim == BOTH_BUTTON_HOLD)
+			{ //extend the time
+				ent->client->ps.torsoTimer = 500;
+			}
+			else
+			{
+				G_SetAnim( ent, NULL, SETANIM_TORSO, BOTH_BUTTON_HOLD, SETANIM_FLAG_OVERRIDE|SETANIM_FLAG_HOLD, 0 );
+			}
+			ent->client->ps.weaponTime = ent->client->ps.torsoTimer;
 			return;
 		}
-	}
-
-#if 0 //ye olde method
-	if (ent->client->ps.stats[STAT_HOLDABLE_ITEM] > 0 &&
-		bg_itemlist[ent->client->ps.stats[STAT_HOLDABLE_ITEM]].giType == IT_HOLDABLE)
-	{
-		if (bg_itemlist[ent->client->ps.stats[STAT_HOLDABLE_ITEM]].giTag == HI_HEALTHDISP ||
-			bg_itemlist[ent->client->ps.stats[STAT_HOLDABLE_ITEM]].giTag == HI_AMMODISP)
-		{ //has a dispenser item selected
-            if (target && target->client && target->health > 0 && OnSameTeam(ent, target) &&
-				G_CanUseDispOn(target, bg_itemlist[ent->client->ps.stats[STAT_HOLDABLE_ITEM]].giTag))
-			{ //a live target that's on my team, we can use him
-				G_UseDispenserOn(ent, bg_itemlist[ent->client->ps.stats[STAT_HOLDABLE_ITEM]].giTag, target);
-
-				//for now, we will use the standard use anim
-				if (ent->client->ps.torsoAnim == BOTH_BUTTON_HOLD)
-				{ //extend the time
-					ent->client->ps.torsoTimer = 500;
-				}
-				else
-				{
-					G_SetAnim( ent, NULL, SETANIM_TORSO, BOTH_BUTTON_HOLD, SETANIM_FLAG_OVERRIDE|SETANIM_FLAG_HOLD, 0 );
-				}
-				ent->client->ps.weaponTime = ent->client->ps.torsoTimer;
-				return;
-			}
-		}
-	}
-#else
-    if ( ((ent->client->ps.stats[STAT_HOLDABLE_ITEMS] & (1 << HI_HEALTHDISP)) || (ent->client->ps.stats[STAT_HOLDABLE_ITEMS] & (1 << HI_AMMODISP))) &&
-		target && target->inuse && target->client && target->health > 0 && OnSameTeam(ent, target) &&
-		(G_CanUseDispOn(target, HI_HEALTHDISP) || G_CanUseDispOn(target, HI_AMMODISP)) )
-	{ //a live target that's on my team, we can use him
-		if (G_CanUseDispOn(target, HI_HEALTHDISP))
-		{
-			G_UseDispenserOn(ent, HI_HEALTHDISP, target);
-		}
-		if (G_CanUseDispOn(target, HI_AMMODISP))
-		{
-			G_UseDispenserOn(ent, HI_AMMODISP, target);
-		}
-
-		//for now, we will use the standard use anim
-		if (ent->client->ps.torsoAnim == BOTH_BUTTON_HOLD)
-		{ //extend the time
-			ent->client->ps.torsoTimer = 500;
-		}
-		else
-		{
-			G_SetAnim( ent, NULL, SETANIM_TORSO, BOTH_BUTTON_HOLD, SETANIM_FLAG_OVERRIDE|SETANIM_FLAG_HOLD, 0 );
-		}
-		ent->client->ps.weaponTime = ent->client->ps.torsoTimer;
-		return;
-	}
 
 #endif
+	}
 
 	//Check for a use command
 	if ( ValidUseTarget( target ) 
