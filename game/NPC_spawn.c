@@ -1386,18 +1386,18 @@ gentity_t *NPC_Spawn_Do( gentity_t *client_ent, gentity_t *ent )
 
 		//no-pilot-death distance
 		newent->speed = ent->speed;
-
-		//for veh transfer all healy stuff
-		newent->healingclass = ent->healingclass;
-		newent->healingsound = ent->healingsound;
-		newent->healingrate = ent->healingrate;
-		newent->model2 = ent->model2;//for droidNPC
 	}
 	else
 	{
 		newent->client->ps.weapon = WP_NONE;//init for later check in NPC_Begin
 	}
-    
+
+	//transfer all healy stuff
+	newent->healingclass = ent->healingclass;
+	newent->healingsound = ent->healingsound;
+	newent->healingrate = ent->healingrate;
+	newent->model2 = ent->model2;//for droidNPC
+
 	VectorCopy(ent->s.origin, newent->s.origin);
 	VectorCopy(ent->s.origin, newent->client->ps.origin);
 	VectorCopy(ent->s.origin, newent->r.currentOrigin);
