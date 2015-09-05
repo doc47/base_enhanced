@@ -428,7 +428,7 @@ qboolean PlaceShield(gentity_t *playerent)
 	static const gitem_t *shieldItem = NULL;
 	gentity_t	*shield = NULL;
 	trace_t		tr;
-	vec3_t		fwd, pos, dest, mins = {-4,-4, 0}, maxs = {4,4,4};
+	vec3_t		up, fwd, pos, dest, mins = {-4,-4, 0}, maxs = {4,4,4};
 
 	if (shieldAttachSound==0)
 	{
@@ -448,65 +448,74 @@ qboolean PlaceShield(gentity_t *playerent)
 	if (tr.fraction > 0.9)
 	{//room in front
 		VectorCopy(tr.endpos, pos);
-		// drop to floor
-		VectorSet( dest, pos[0], pos[1], pos[2] - 4096 );
-		trap_Trace( &tr, pos, mins, maxs, dest, playerent->s.number, MASK_SOLID );
-		if ( !tr.startsolid && !tr.allsolid )
-		{
-			// got enough room so place the portable shield
-			shield = G_Spawn();
 
-			// Figure out what direction the shield is facing.
-			if (fabs(fwd[0]) > fabs(fwd[1]))
-			{	// shield is north/south, facing east.
-				shield->s.angles[YAW] = 0;
-			}
-			else
-			{	// shield is along the east/west axis, facing north
-				shield->s.angles[YAW] = 90;
-			}
-			shield->think = CreateShield;
-			shield->nextthink = level.time + 500;	// power up after .5 seconds
-			shield->parent = playerent;
+		// check height of the shield
+		VectorCopy( tr.endpos, up );
+		up[2] += MAX_SHIELD_HEIGHT;
+		trap_Trace( &tr, tr.endpos, NULL, NULL, up, ENTITYNUM_NONE, MASK_SHOT );
 
-			// Set team number.
-			shield->s.otherEntityNum2 = playerent->client->sess.sessionTeam;
-
-			shield->s.eType = ET_SPECIAL;
-			shield->s.modelindex =  HI_SHIELD;	// this'll be used in CG_Useable() for rendering.
-			shield->classname = shieldItem->classname;
-
-			shield->r.contents = CONTENTS_TRIGGER;
-
-			shield->touch = 0;
-			// using an item causes it to respawn
-			shield->use = 0; 
-
-			// allow to ride movers
-			shield->s.groundEntityNum = tr.entityNum;
-
-			G_SetOrigin( shield, tr.endpos );
-
-			shield->s.eFlags &= ~EF_NODRAW;
-			shield->r.svFlags &= ~SVF_NOCLIENT;
-
-			trap_LinkEntity (shield);
-
-			shield->s.owner = playerent->s.number;
-			shield->s.shouldtarget = qtrue;
-			if (g_gametype.integer >= GT_TEAM)
+		if ( (int)(MAX_SHIELD_HEIGHT * tr.fraction) > 0 )
+		{	
+			// drop to floor
+			VectorSet( dest, pos[0], pos[1], pos[2] - 4096 );
+			trap_Trace( &tr, pos, mins, maxs, dest, playerent->s.number, MASK_SOLID );
+			if ( !tr.startsolid && !tr.allsolid )
 			{
-				shield->s.teamowner = playerent->client->sess.sessionTeam;
-			}
-			else
-			{
-				shield->s.teamowner = 16;
-			}
+				// got enough room so place the portable shield
+				shield = G_Spawn();
 
-			// Play placing sound...
-			G_AddEvent(shield, EV_GENERAL_SOUND, shieldAttachSound);
+				// Figure out what direction the shield is facing.
+				if (fabs(fwd[0]) > fabs(fwd[1]))
+				{	// shield is north/south, facing east.
+					shield->s.angles[YAW] = 0;
+				}
+				else
+				{	// shield is along the east/west axis, facing north
+					shield->s.angles[YAW] = 90;
+				}
+				shield->think = CreateShield;
+				shield->nextthink = level.time + 500;	// power up after .5 seconds
+				shield->parent = playerent;
 
-			return qtrue;
+				// Set team number.
+				shield->s.otherEntityNum2 = playerent->client->sess.sessionTeam;
+
+				shield->s.eType = ET_SPECIAL;
+				shield->s.modelindex =  HI_SHIELD;	// this'll be used in CG_Useable() for rendering.
+				shield->classname = shieldItem->classname;
+
+				shield->r.contents = CONTENTS_TRIGGER;
+
+				shield->touch = 0;
+				// using an item causes it to respawn
+				shield->use = 0;
+
+				// allow to ride movers
+				shield->s.groundEntityNum = tr.entityNum;
+
+				G_SetOrigin( shield, tr.endpos );
+
+				shield->s.eFlags &= ~EF_NODRAW;
+				shield->r.svFlags &= ~SVF_NOCLIENT;
+
+				trap_LinkEntity (shield); 
+
+				shield->s.owner = playerent->s.number;
+				shield->s.shouldtarget = qtrue;
+				if (g_gametype.integer >= GT_TEAM)
+				{
+					shield->s.teamowner = playerent->client->sess.sessionTeam;
+				}
+				else
+				{
+					shield->s.teamowner = 16;
+				}
+
+				// Play placing sound...
+				G_AddEvent(shield, EV_GENERAL_SOUND, shieldAttachSound);
+
+				return qtrue;
+			}
 		}
 	}
 	// no room
