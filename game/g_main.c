@@ -4226,16 +4226,16 @@ void G_RunFrame( int levelTime ) {
 	level.previousTime = level.time;
 	level.time = levelTime;
 
-    //OSP: pause
-    if ( level.pause.state != PAUSE_NONE )
-    {
-            static int lastCSTime = 0;
-            int dt = level.time-level.previousTime;
+	//OSP: pause
+	if ( level.pause.state != PAUSE_NONE )
+	{
+			static int lastCSTime = 0;
+			int dt = level.time-level.previousTime;
 
-            // compensate for timelimit and warmup time
-            if ( level.warmupTime > 0 )
-                    level.warmupTime += dt;
-            level.startTime += dt;
+			// compensate for timelimit and warmup time
+			if ( level.warmupTime > 0 )
+					level.warmupTime += dt;
+			level.startTime += dt;
 
 			// floor start time to avoid time flipering
 			if ( (level.time - level.startTime) % 1000 >= 500)
@@ -4245,25 +4245,35 @@ void G_RunFrame( int levelTime ) {
 			if ( !lastCSTime )
 				lastCSTime = level.time;
 
-            // client needs to do the same, just adjust the configstrings periodically
-            // i can't see a way around this mess without requiring a client mod.
-            if ( lastCSTime < level.time - 500 ) {
-                    lastCSTime += 500;
-                    trap_SetConfigstring( CS_LEVEL_START_TIME, va( "%i", level.startTime ) );
-                    if ( level.warmupTime > 0 )
-                            trap_SetConfigstring( CS_WARMUP, va("%i", level.warmupTime ) );
-            }
+			// client needs to do the same, just adjust the configstrings periodically
+			// i can't see a way around this mess without requiring a client mod.
+			if ( lastCSTime < level.time - 500 ) {
+					lastCSTime += 500;
+					trap_SetConfigstring( CS_LEVEL_START_TIME, va( "%i", level.startTime ) );
+					if ( level.warmupTime > 0 )
+							trap_SetConfigstring( CS_WARMUP, va("%i", level.warmupTime ) );
+			}
 
-            if ( g_gametype.integer == GT_SIEGE )
-            {
-                // siege timer adjustment
-                char siegeState[128];
-                int round, startTime;
-                trap_GetConfigstring( CS_SIEGE_STATE, siegeState, sizeof( siegeState ) );
-                sscanf( siegeState, "%i|%i", &round, &startTime );
-                startTime += dt;
-                trap_SetConfigstring( CS_SIEGE_STATE, va( "%i|%i", round, startTime ) );
-                g_siegeRespawnCheck += dt;
+			if ( g_gametype.integer == GT_SIEGE )
+			{
+				static int accumulatedDt = 0;
+
+				// siege timer adjustment
+				accumulatedDt += dt;
+
+				if ( accumulatedDt >= 1000 )
+				{
+					char siegeState[128];
+					int round, startTime;
+					trap_GetConfigstring( CS_SIEGE_STATE, siegeState, sizeof( siegeState ) );
+					sscanf( siegeState, "%i|%i", &round, &startTime );
+					startTime += accumulatedDt;
+					trap_SetConfigstring( CS_SIEGE_STATE, va( "%i|%i", round, startTime ) );
+
+					accumulatedDt = 0;
+				}
+
+				g_siegeRespawnCheck += dt;
 
 				// siege objectives timers adjustments
 				if ( gImperialCountdown )
@@ -4276,31 +4286,31 @@ void G_RunFrame( int levelTime ) {
 					gRebelCountdown += dt;
 				}
 
-            }
-    }
-    if ( level.pause.state == PAUSE_PAUSED )
-    {
-            if ( lastMsgTime < level.time-500 ) {
-                    trap_SendServerCommand( -1, va( "cp \"Match has been paused. (%.0f)\n\"", ceil((level.pause.time-level.time)/1000.0f)) );
-                    lastMsgTime = level.time;
-            }
+			}
+	}
+	if ( level.pause.state == PAUSE_PAUSED )
+	{
+			if ( lastMsgTime < level.time-1000 ) {
+					trap_SendServerCommand( -1, va( "cp \"Match has been paused. (%.0f)\n\"", ceil((level.pause.time-level.time)/1000.0f)) );
+					lastMsgTime = level.time;
+			}
 
 			//if ( level.time > level.pause.time - (japp_unpauseTime.integer*1000) )
-            if ( level.time > level.pause.time - (5*1000) ) // 5 seconds
-                    level.pause.state = PAUSE_UNPAUSING;
-    }
-    if ( level.pause.state == PAUSE_UNPAUSING )
-    {
-            if ( lastMsgTime < level.time-500 ) {
-                    trap_SendServerCommand( -1, va( "cp \"MATCH IS UNPAUSING\nin %.0f...\n\"", ceil((level.pause.time-level.time)/1000.0f)) );
-                    lastMsgTime = level.time;
-            }
+			if ( level.time > level.pause.time - (5*1000) ) // 5 seconds
+					level.pause.state = PAUSE_UNPAUSING;
+	}
+	if ( level.pause.state == PAUSE_UNPAUSING )
+	{
+			if ( lastMsgTime < level.time-500 ) {
+					trap_SendServerCommand( -1, va( "cp \"MATCH IS UNPAUSING\nin %.0f...\n\"", ceil((level.pause.time-level.time)/1000.0f)) );
+					lastMsgTime = level.time;
+			}
 
-            if ( level.time > level.pause.time ) {
-                    level.pause.state = PAUSE_NONE;
-                    trap_SendServerCommand( -1, "cp \"Go!\n\"" );
-            }
-    }
+			if ( level.time > level.pause.time ) {
+					level.pause.state = PAUSE_NONE;
+					trap_SendServerCommand( -1, "cp \"Go!\n\"" );
+			}
+	}
 
 	if (g_allowNPC.integer)
 	{
