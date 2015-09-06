@@ -4002,23 +4002,28 @@ Runs thinking code for this frame if necessary
 */
 extern void proxMineThink(gentity_t *ent);
 extern void SiegeItemThink( gentity_t *ent );
+extern void pas_think( gentity_t *ent );
 
 void G_RunThink (gentity_t *ent) {
 	int	thinktime;
 
-    //OSP: pause
-    //      If paused, push nextthink
-    if ( level.pause.state != PAUSE_NONE) { 
+	//OSP: pause
+	//      If paused, push nextthink
+	if ( level.pause.state != PAUSE_NONE) { 
 		if ( ent-g_entities >= g_maxclients.integer && ent->nextthink > level.time )
-            ent->nextthink += level.time - level.previousTime;
+			ent->nextthink += level.time - level.previousTime;
 
 		// special case, mines need update here
 		if ( ent->think == proxMineThink && ent->genericValue15 > level.time)
 			ent->genericValue15 += level.time - level.previousTime;
 
-        // another special case, siege items need respawn timer update
-        if ( ent->think == SiegeItemThink && ent->genericValue9 > level.time )
-            ent->genericValue9 += level.time - level.previousTime;
+		// another special case, siege items need respawn timer update
+		if ( ent->think == SiegeItemThink && ent->genericValue9 > level.time )
+			ent->genericValue9 += level.time - level.previousTime;
+
+		// more special cases, sentry
+		if ( ent->think == pas_think )
+			ent->genericValue8 += level.time - level.previousTime;
 
 	}
 
