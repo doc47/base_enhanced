@@ -3769,6 +3769,11 @@ void ClientEndFrame( gentity_t *ent ) {
             ent->pain_debounce_time += time_delta;
             ent->client->ps.fd.forcePowerRegenDebounceTime += time_delta;
 
+			if ( ent->client->tempSpectate )
+			{
+				ent->client->tempSpectate += time_delta;
+			}
+
 			// update force powers durations
 			for(i=0;i < NUM_FORCE_POWERS;++i) {
 				if (ent->client->ps.fd.forcePowerDuration[i])
