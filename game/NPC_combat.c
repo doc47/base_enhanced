@@ -818,7 +818,7 @@ void WeaponThink( qboolean inCombat )
 	//For now, no-one runs out of ammo	
 	if(NPC->client->ps.ammo[ weaponData[client->ps.weapon].ammoIndex ] < 10)	// checkme	
 	{
-		Add_Ammo (NPC, client->ps.weapon, 100);
+		Add_Ammo( NPC, weaponData[client->ps.weapon].ammoIndex, 100 );
 	}
 
 	ucmd.weapon = client->ps.weapon;

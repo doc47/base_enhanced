@@ -1088,7 +1088,7 @@ void G_SpawnItem (gentity_t *ent, gitem_t *item);
 void FinishSpawningItem( gentity_t *ent );
 void Think_Weapon (gentity_t *ent);
 int ArmorIndex (gentity_t *ent);
-int Add_Ammo (gentity_t *ent, int weapon, int count);
+int Add_Ammo( gentity_t *ent, ammo_t ammoIndex, int count );
 int Add_Max_Ammo( gentity_t *ent, ammo_t ammoIndex );
 void Touch_Item (gentity_t *ent, gentity_t *other, trace_t *trace);
 
