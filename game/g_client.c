@@ -3729,6 +3729,13 @@ void ClientSpawn(gentity_t *ent) {
 		}
 		inSiegeWithClass = qtrue;
 
+		if ( g_gametype.integer == GT_SIEGE
+			&& client->siegeClass != -1
+			&& (bgSiegeClasses[client->siegeClass].classflags & (1 << CFL_EXTRA_AMMO)) )
+		{//double ammo
+			client->ps.eFlags |= EF_DOUBLE_AMMO;
+		}
+
 		while (m < WP_NUM_WEAPONS)
 		{
 			if (client->ps.stats[STAT_WEAPONS] & (1 << m))
@@ -3743,14 +3750,7 @@ void ClientSpawn(gentity_t *ent) {
 
 				if (m >= WP_BRYAR_PISTOL)
 				{ //Max his ammo out for all the weapons he has.
-					Add_Max_Ammo( ent, weaponData[m].ammoIndex );
-
-					if ( g_gametype.integer == GT_SIEGE
-						&& client->siegeClass != -1
-						&& (bgSiegeClasses[client->siegeClass].classflags & (1 << CFL_EXTRA_AMMO)) )
-					{//double ammo
-						client->ps.eFlags |= EF_DOUBLE_AMMO;
-					}
+					Add_Max_Ammo( ent, weaponData[m].ammoIndex );  
 				}
 			}
 			m++;
