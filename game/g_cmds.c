@@ -772,16 +772,17 @@ void SetTeam( gentity_t *ent, char *s ) {
 
 	if (g_gametype.integer == GT_SIEGE)
 	{
+		qboolean teamChanged = qfalse;
+
 		if (client->tempSpectate >= level.time &&
 			team == TEAM_SPECTATOR)
 		{ //sorry, can't do that.
 			return;
 		}
 
-		if ( client->sess.siegeDesiredTeam == team )
+		if ( client->sess.siegeDesiredTeam != team )
 		{
-			//already in the team
-			return;
+			teamChanged = qtrue;
 		}
 
 		client->sess.siegeDesiredTeam = team;
@@ -814,11 +815,21 @@ void SetTeam( gentity_t *ent, char *s ) {
 			if (ent->client->sess.sessionTeam != ent->client->sess.siegeDesiredTeam)
 			{
 				SetTeamQuick(ent, ent->client->sess.siegeDesiredTeam, qfalse);
-                BroadcastTeamChange( client, client->sess.sessionTeam );
+
+				if ( teamChanged )
+				{
+					BroadcastTeamChange( client, client->sess.sessionTeam );
+				}
 			}
 
 			return;
+			
 		}
+
+		if ( !teamChanged )
+		{
+			return;
+		} 			
 	}
 
 	// override decision if limiting the players
