@@ -778,6 +778,12 @@ void SetTeam( gentity_t *ent, char *s ) {
 			return;
 		}
 
+		if ( client->sess.siegeDesiredTeam == team )
+		{
+			//already in the team
+			return;
+		}
+
 		client->sess.siegeDesiredTeam = team;
 
 		if (client->sess.sessionTeam != TEAM_SPECTATOR &&
