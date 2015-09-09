@@ -1209,42 +1209,13 @@ void ammo_generic_power_converter_use( gentity_t *self, gentity_t *other, gentit
 			{
 				add = 1;
 			}
-			if ( ( (activator->client->ps.eFlags & EF_DOUBLE_AMMO) && (activator->client->ps.ammo[i] < ammoData[i].max*2)) ||
-				( activator->client->ps.ammo[i] < ammoData[i].max ) )
+
+			if ( Add_Ammo( activator, i, add ) > 0 )
 			{
 				gaveSome = qtrue;
-				if ( g_gametype.integer == GT_SIEGE  && i == AMMO_ROCKETS && activator->client->ps.ammo[i] >= 10 )
-				{ //this stuff is already a freaking mess, so..
-					gaveSome = qfalse;
-				}
-				activator->client->ps.ammo[i] += add;
-				if ( g_gametype.integer == GT_SIEGE  && i == AMMO_ROCKETS && activator->client->ps.ammo[i] >= 10 )
-				{	// fixme - this should SERIOUSLY be externed.
-					activator->client->ps.ammo[i] = 10;
-				}
-				else if ( activator->client->ps.eFlags & EF_DOUBLE_AMMO )
-				{
-					if (activator->client->ps.ammo[i] >= ammoData[i].max * 2)
-					{	// yuck.
-						activator->client->ps.ammo[i] = ammoData[i].max * 2;
-					}
-					else
-					{
-						stop = 0;
-					}
-				}
-				else
-				{
-					if (activator->client->ps.ammo[i] >= ammoData[i].max)
-					{
-						activator->client->ps.ammo[i] = ammoData[i].max;
-					}
-					else
-					{
-						stop = 0;
-					}
-				}
+				stop = 0;
 			}
+				
 			i++;
 			if (!self->genericValue12 && gaveSome)
 			{

@@ -3743,33 +3743,13 @@ void ClientSpawn(gentity_t *ent) {
 
 				if (m >= WP_BRYAR_PISTOL)
 				{ //Max his ammo out for all the weapons he has.
-					if ( g_gametype.integer == GT_SIEGE 
-						&& m == WP_ROCKET_LAUNCHER )
-					{//don't give full ammo!
-						//FIXME: extern this and check it when getting ammo from supplier, pickups or ammo stations!
-						if ( client->siegeClass != -1 &&
-							(bgSiegeClasses[client->siegeClass].classflags & (1<<CFL_SINGLE_ROCKET)) )
-						{
-							client->ps.ammo[weaponData[m].ammoIndex] = 1;
-						}
-						else
-						{
-							client->ps.ammo[weaponData[m].ammoIndex] = 10;
-						}
-					}
-					else
-					{
-						if ( g_gametype.integer == GT_SIEGE 
-							&& client->siegeClass != -1
-							&& (bgSiegeClasses[client->siegeClass].classflags & (1<<CFL_EXTRA_AMMO)) )
-						{//double ammo
-							client->ps.ammo[weaponData[m].ammoIndex] = ammoData[weaponData[m].ammoIndex].max*2;
-							client->ps.eFlags |= EF_DOUBLE_AMMO;
-						}
-						else
-						{
-							client->ps.ammo[weaponData[m].ammoIndex] = ammoData[weaponData[m].ammoIndex].max;
-						}
+					Add_Max_Ammo( ent, weaponData[m].ammoIndex );
+
+					if ( g_gametype.integer == GT_SIEGE
+						&& client->siegeClass != -1
+						&& (bgSiegeClasses[client->siegeClass].classflags & (1 << CFL_EXTRA_AMMO)) )
+					{//double ammo
+						client->ps.eFlags |= EF_DOUBLE_AMMO;
 					}
 				}
 			}

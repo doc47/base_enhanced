@@ -3,6 +3,7 @@
 #include "g_local.h"
 #include "G2.h"
 #include "q_shared.h"
+#include "bg_saga.h"
 
 /*
 
@@ -2145,23 +2146,62 @@ int Pickup_Holdable( gentity_t *ent, gentity_t *other ) {
 
 //======================================================================
 
-void Add_Ammo (gentity_t *ent, int weapon, int count)
+int Get_Max_Ammo( gentity_t* ent, ammo_t ammoIndex )
 {
-	int max = ammoData[weapon].max;
-
-	// *CHANGED 109* siege double ammo max
-	if (ent->client->ps.eFlags & EF_DOUBLE_AMMO) {
-		max *= 2;
+	if ( !ent || !ent->client )
+	{
+		return 0;
 	}
 
-	if ( ent->client->ps.ammo[weapon] < max )
+	int max = ammoData[ammoIndex].max;
+
+	// siege is always special...
+	if ( g_gametype.integer == GT_SIEGE )
 	{
-		ent->client->ps.ammo[weapon] += count;
-		if ( ent->client->ps.ammo[weapon] > max )
+		if ( ammoIndex == AMMO_ROCKETS )
 		{
-			ent->client->ps.ammo[weapon] = max;
+			if ( ent->client->siegeClass != -1 &&
+				(bgSiegeClasses[ent->client->siegeClass].classflags & (1 << CFL_SINGLE_ROCKET)) )
+			{
+				max = 1;
+			}
+			else
+			{
+				max = 10;
+			}
+		}
+		else if ( (ent->client->siegeClass != -1)
+			&& (bgSiegeClasses[ent->client->siegeClass].classflags & (1 << CFL_EXTRA_AMMO)) )
+		{//double ammo
+			max *= 2;
+		}
+	}	 
+
+	return max;
+}
+
+
+int Add_Ammo( gentity_t *ent, ammo_t ammoIndex, int count )
+{
+	int max = Get_Max_Ammo( ent, ammoIndex );
+	int original = ent->client->ps.ammo[ammoIndex];
+
+	if ( ent->client->ps.ammo[ammoIndex] < max )
+	{
+		ent->client->ps.ammo[ammoIndex] += count;
+		if ( ent->client->ps.ammo[ammoIndex] > max )
+		{
+			ent->client->ps.ammo[ammoIndex] = max;
 		}
 	}
+
+	return (ent->client->ps.ammo[ammoIndex] - original);
+}
+
+int Add_Max_Ammo( gentity_t *ent, ammo_t ammoIndex )
+{
+	int amount = Get_Max_Ammo( ent, ammoIndex );
+	return Add_Ammo( ent, ammoIndex , amount);
 }
 
 int Pickup_Ammo (gentity_t *ent, gentity_t *other)
