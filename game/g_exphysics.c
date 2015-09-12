@@ -75,6 +75,7 @@ void G_RunExPhys(gentity_t *ent, float gravity, float mass, float bounce, qboole
 				ent->touch(ent, &g_entities[tr.entityNum], &tr);
 			}
 		}
+		trap_LinkEntity( ent );
 		return;
 	}
 
