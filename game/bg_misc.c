@@ -2661,6 +2661,15 @@ void BG_AddPredictableEventToPlayerstate( int newEvent, int eventParm, playerSta
 	}
 #endif
 	ps->events[ps->eventSequence & (MAX_PS_EVENTS-1)] = newEvent;
+
+	if ( (eventParm > 255) && ((ps->eventSequence & (MAX_PS_EVENTS - 1)) == 1) )
+	{
+		// hacky, but this way we are forcing use of eventParms[0], which can
+		// hold 16 bit numbers over network, instead of eventParms[1] which can
+		// hold only 8 bit
+		ps->eventSequence++; 
+	}
+
 	ps->eventParms[ps->eventSequence & (MAX_PS_EVENTS-1)] = eventParm;
 	ps->eventSequence++;
 }
