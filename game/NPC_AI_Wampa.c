@@ -422,7 +422,7 @@ void NPC_Wampa_Pain( gentity_t *self, gentity_t *attacker, int damage )
 		&& attacker != self->enemy
 		&& !(attacker->flags&FL_NOTARGET) )
 	{
-		if ( ( (attacker->s.number < MAX_CLIENTS) && !Q_irand(0,3) )
+		if ( ( G_IsPlayer(attacker) && !Q_irand(0,3) )
 			|| !self->enemy
 			|| self->enemy->health == 0
 			|| (self->enemy->client&&self->enemy->client->NPC_class == CLASS_WAMPA)

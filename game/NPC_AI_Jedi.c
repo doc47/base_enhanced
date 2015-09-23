@@ -135,7 +135,7 @@ void Jedi_ClearTimers( gentity_t *ent )
 
 void Jedi_PlayBlockedPushSound( gentity_t *self )
 {
-	if ( self->s.number < MAX_CLIENTS )
+	if ( G_IsPlayer(self) )
 	{
 		G_AddVoiceEvent( self, EV_PUSHFAIL, 3000 );
 	}
@@ -148,7 +148,7 @@ void Jedi_PlayBlockedPushSound( gentity_t *self )
 
 void Jedi_PlayDeflectSound( gentity_t *self )
 {
-	if ( self->s.number < MAX_CLIENTS )
+	if ( G_IsPlayer(self) )
 	{
 		G_AddVoiceEvent( self, Q_irand( EV_DEFLECT1, EV_DEFLECT3 ), 3000 );
 	}
@@ -208,7 +208,7 @@ void WP_ResistForcePush( gentity_t *self, gentity_t *pusher, qboolean noPenalty 
 	{
 		return;
 	}
-	if ( ((self->s.number < MAX_CLIENTS)|| self->client->NPC_class == CLASS_DESANN || !Q_stricmp("Yoda",self->NPC_type) || self->client->NPC_class == CLASS_LUKE || self->client->NPC_class == CLASS_KYLE)
+	if ( (G_IsPlayer(self) || self->client->NPC_class == CLASS_DESANN || !Q_stricmp("Yoda",self->NPC_type) || self->client->NPC_class == CLASS_LUKE || self->client->NPC_class == CLASS_KYLE)
 		&& (VectorLengthSquared( self->client->ps.velocity ) > 10000 || self->client->ps.fd.forcePowerLevel[FP_PUSH] >= FORCE_LEVEL_3 || self->client->ps.fd.forcePowerLevel[FP_PULL] >= FORCE_LEVEL_3 ) )
 	{
 		runningResist = qtrue;
@@ -2113,7 +2113,7 @@ int Jedi_ReCalcParryTime( gentity_t *self, evasionType_t evasionType )
 	{
 		return 0;
 	}
-	if ( self->s.number < MAX_CLIENTS )
+	if ( G_IsPlayer(self) )
 	{//player 
 		return bg_parryDebounce[self->client->ps.fd.forcePowerLevel[FP_SABER_DEFENSE]];
 	}
@@ -2737,7 +2737,7 @@ evasionType_t Jedi_SaberBlockGo( gentity_t *self, usercmd_t *cmd, vec3_t pHitloc
 			}
 			if ( ((evasionType = Jedi_CheckFlipEvasions( self, rightdot, zdiff ))!=EVASION_NONE) )
 			{
-				if ( d_slowmodeath.integer > 5 && self->enemy && self->enemy->s.number < MAX_CLIENTS )
+				if ( d_slowmodeath.integer > 5 && self->enemy && G_IsPlayer(self->enemy) )
 				{
 					G_StartMatrixEffect( self );
 				}
@@ -2873,7 +2873,7 @@ evasionType_t Jedi_SaberBlockGo( gentity_t *self, usercmd_t *cmd, vec3_t pHitloc
 		//FIXME: maybe make a sound?  Like a grunt?  EV_JUMP?
 		self->client->ps.pm_flags |= PMF_TIME_KNOCKBACK;
 		//dodged, not block
-		if ( d_slowmodeath.integer > 5 && self->enemy && self->enemy->s.number < MAX_CLIENTS )
+		if ( d_slowmodeath.integer > 5 && self->enemy && G_IsPlayer(self->enemy) )
 		{
 			G_StartMatrixEffect( self );
 		}
@@ -5628,7 +5628,7 @@ static void Jedi_Attack( void )
 			|| (g_spskill.integer && ( NPC->client->NPC_class == CLASS_DESANN || NPCInfo->rank >= Q_irand( RANK_CREWMAN, RANK_CAPTAIN ))))
 		{//Tavion will kick in force speed if the player does...
 			if ( NPC->enemy 
-				&& (NPC->enemy->s.number < MAX_CLIENTS)
+				&& G_IsPlayer(NPC->enemy)
 				&& NPC->enemy->client 
 				&& (NPC->enemy->client->ps.fd.forcePowersActive & (1<<FP_SPEED)) 
 				&& !(NPC->client->ps.fd.forcePowersActive & (1<<FP_SPEED)) )

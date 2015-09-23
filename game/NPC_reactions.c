@@ -215,7 +215,7 @@ void NPC_ChoosePainAnimation( gentity_t *self, gentity_t *other, vec3_t point, i
 			pain_chance = (200.0f-self->health)/100.0f + damage/50.0f;
 		}
 	}
-	else if ( self->client && self->client->playerTeam == NPCTEAM_PLAYER && other && other->s.number < MAX_CLIENTS)
+	else if ( self->client && self->client->playerTeam == NPCTEAM_PLAYER && other && G_IsPlayer(other) )
 	{//ally shot by player always complains
 		pain_chance = 1.1f;
 	}
@@ -386,7 +386,7 @@ void NPC_Pain(gentity_t *self, gentity_t *attacker, int damage)
 				}
 				return;
 			}
-			else if ( self->NPC && !other->s.number )//should be assumed, but...
+			else if ( self->NPC && G_IsPlayer(other) )//should be assumed, but...
 			{//dammit, stop that!
 				if ( self->NPC->charmedTime )
 				{//mindtricked

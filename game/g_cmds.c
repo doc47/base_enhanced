@@ -4398,7 +4398,7 @@ void ClientCommand( int clientNum ) {
 
 				if (grabber->inuse && grabber->client && grabber->ghoul2)
 				{
-					if (!grabber->s.number)
+					if ( G_IsPlayer(grabber) )
 					{ //switch cl 0 and entitynum_none, so we can operate on the "if non-0" concept
 						ent->client->ps.ragAttach = ENTITYNUM_NONE;
 					}

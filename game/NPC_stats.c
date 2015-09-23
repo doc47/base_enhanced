@@ -857,7 +857,7 @@ qboolean NPC_ParseParms( const char *NPCName, gentity_t *NPC )
 		NPCName = "Player";
 	}
 
-	if ( NPC->s.number < MAX_CLIENTS && NPC->client != NULL )
+	if ( G_IsPlayer(NPC) && NPC->client != NULL )
 	{//player, only want certain data
 		parsingPlayer = qtrue;
 	}

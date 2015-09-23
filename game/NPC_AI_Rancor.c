@@ -695,7 +695,7 @@ void NPC_Rancor_Pain( gentity_t *self, gentity_t *attacker, int damage )
 	{
 		if ( !self->count )
 		{
-			if ( (!attacker->s.number&&!Q_irand(0,3))
+			if ( (G_IsPlayer(attacker) &&!Q_irand(0,3))
 				|| !self->enemy
 				|| self->enemy->health == 0
 				|| (self->enemy->client&&self->enemy->client->NPC_class == CLASS_RANCOR)
