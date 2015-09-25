@@ -112,13 +112,13 @@ void NPC_RemoveBody( gentity_t *self )
 {
 	CorpsePhysics( self );
 
-	self->nextthink = level.time + FRAMETIME;
+	self->nextthink = level.time + level.frameTime;
 
 	if ( self->NPC->nextBStateThink <= level.time )
 	{
 		trap_ICARUS_MaintainTaskManager(self->s.number);
 	}
-	self->NPC->nextBStateThink = level.time + FRAMETIME;
+	self->NPC->nextBStateThink = level.time + level.frameTime;
 
 	if ( self->message )
 	{//I still have a key
@@ -168,7 +168,7 @@ void NPC_RemoveBody( gentity_t *self )
 		// Only do all of this nonsense for Scav boys ( and girls )
 		if( self->client->playerTeam == NPCTEAM_ENEMY || self->client->NPC_class == CLASS_PROTOCOL )
 		{
-			self->nextthink = level.time + FRAMETIME; // try back in a second
+			self->nextthink = level.time + level.frameTime; // try back in a second
 			}
 
 		//FIXME: there are some conditions - such as heavy combat - in which we want
@@ -437,7 +437,7 @@ static void DeadThink ( void )
 				if (!trap_ICARUS_IsRunning(NPC->s.number))
 				{
 					NPC->think = G_FreeEntity;
-					NPC->nextthink = level.time + FRAMETIME;
+					NPC->nextthink = level.time + level.frameTime;
 				}
 			}
 			else
@@ -449,7 +449,7 @@ static void DeadThink ( void )
 
 				//FIXME: keep it running through physics somehow?
 				NPC->think = NPC_RemoveBody;
-				NPC->nextthink = level.time + FRAMETIME;
+				NPC->nextthink = level.time + level.frameTime;
 				npc_class = NPC->client->NPC_class;
 				// check for droids
 				if ( npc_class == CLASS_SEEKER || npc_class == CLASS_REMOTE || npc_class == CLASS_PROBE || npc_class == CLASS_MOUSE ||
@@ -457,10 +457,10 @@ static void DeadThink ( void )
 					 npc_class == CLASS_MARK2 || npc_class == CLASS_SENTRY )
 				{
 					NPC->client->ps.eFlags |= EF_NODRAW;
-					NPCInfo->timeOfDeath = level.time + FRAMETIME * 8;
+					NPCInfo->timeOfDeath = level.time + level.frameTime * 8;
 				}
 				else
-					NPCInfo->timeOfDeath = level.time + FRAMETIME * 4;
+					NPCInfo->timeOfDeath = level.time + level.frameTime * 4;
 			}
 			return;
 		}
@@ -1553,7 +1553,7 @@ void NPC_Think ( gentity_t *self)//, int msec )
 	int i = 0;
 	gentity_t *player;
 
-	self->nextthink = level.time + FRAMETIME;
+	self->nextthink = level.time + level.frameTime;
 
 	SetNPCGlobals( self );
 
@@ -1592,7 +1592,7 @@ void NPC_Think ( gentity_t *self)//, int msec )
 		return;
 	}
 
-	self->nextthink = level.time + FRAMETIME/2;
+	self->nextthink = level.time + level.frameTime / 2;
 
 
 	while (i < MAX_CLIENTS)
@@ -1653,11 +1653,11 @@ void NPC_Think ( gentity_t *self)//, int msec )
 
 		if ( NPC->s.weapon == WP_SABER && g_spskill.integer >= 2 && NPCInfo->rank > RANK_LT_JG )
 		{//Jedi think faster on hard difficulty, except low-rank (reborn)
-			NPCInfo->nextBStateThink = level.time + FRAMETIME/2;
+			NPCInfo->nextBStateThink = level.time + level.frameTime / 2;
 		}
 		else
 		{//Maybe even 200 ms?
-			NPCInfo->nextBStateThink = level.time + FRAMETIME;
+			NPCInfo->nextBStateThink = level.time + level.frameTime;
 		}
 
 		//nextthink is set before this so something in here can override it

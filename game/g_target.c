@@ -373,7 +373,7 @@ void target_laser_think (gentity_t *self) {
 	VectorCopy (tr.endpos, self->s.origin2);
 
 	trap_LinkEntity( self );
-	self->nextthink = level.time + FRAMETIME;
+	self->nextthink = level.time + level.frameTime;
 }
 
 void target_laser_on (gentity_t *self)
@@ -431,7 +431,7 @@ void SP_target_laser (gentity_t *self)
 {
 	// let everything else get spawned before we start firing
 	self->think = target_laser_start;
-	self->nextthink = level.time + FRAMETIME;
+	self->nextthink = level.time + level.frameTime;
 }
 
 
@@ -502,7 +502,7 @@ void target_relay_use (gentity_t *self, gentity_t *other, gentity_t *activator) 
 		else
 		{//remove
 			self->think = G_FreeEntity;
-			self->nextthink = level.time + FRAMETIME;
+			self->nextthink = level.time + level.frameTime;
 		}
 	}
 	if ( self->spawnflags & 4 ) {

@@ -290,7 +290,7 @@ qboolean NAV_ClearPathToPoint( gentity_t *self, vec3_t pmins, vec3_t pmaxs, vec3
 					G_DrawEdge( point, trace.endpos, EDGE_PATH );
 					VectorAdd(g_entities[trace.entityNum].r.mins, g_entities[trace.entityNum].r.currentOrigin, p1);
 					VectorAdd(g_entities[trace.entityNum].r.maxs, g_entities[trace.entityNum].r.currentOrigin, p2);
-					G_CubeOutline( p1, p2, FRAMETIME, 0x0000ff, 0.5 );
+					G_CubeOutline(p1, p2, level.frameTime, 0x0000ff, 0.5);
 				}
 				//FIXME: if it is a bmodel, light up the surf?
 			}
@@ -323,7 +323,7 @@ qboolean NAV_ClearPathToPoint( gentity_t *self, vec3_t pmins, vec3_t pmaxs, vec3
 				G_DrawEdge( self->r.currentOrigin, trace.endpos, EDGE_PATH );
 				VectorAdd(g_entities[trace.entityNum].r.mins, g_entities[trace.entityNum].r.currentOrigin, p1);
 				VectorAdd(g_entities[trace.entityNum].r.maxs, g_entities[trace.entityNum].r.currentOrigin, p2);
-				G_CubeOutline( p1, p2, FRAMETIME, 0x0000ff, 0.5 );
+				G_CubeOutline(p1, p2, level.frameTime, 0x0000ff, 0.5);
 			}
 			//FIXME: if it is a bmodel, light up the surf?
 		}
@@ -719,7 +719,7 @@ qboolean NAV_TrueCollision( gentity_t *self, gentity_t *blocker, vec3_t movedir,
 	if ( dot < 0.85 )
 		return qfalse;
 
-	VectorMA( self->r.currentOrigin, speed*FRAMETIME, velocityDir, testPos );
+	VectorMA(self->r.currentOrigin, speed*level.frameTime, velocityDir, testPos);
 
 	VectorAdd( blocker->r.currentOrigin, blocker->r.mins, tmins );
 	VectorAdd( blocker->r.currentOrigin, blocker->r.maxs, tmaxs );

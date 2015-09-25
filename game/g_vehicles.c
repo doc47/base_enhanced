@@ -1528,7 +1528,7 @@ static void DeathUpdate( Vehicle_t *pVeh )
 #else
 			parent->e_ThinkFunc = thinkF_G_FreeEntity;
 #endif
-			parent->nextthink = level.time + FRAMETIME;
+			parent->nextthink = level.time + level.frameTime;
 		}
 	}
 #ifndef _JK2MP

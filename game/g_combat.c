@@ -3153,7 +3153,7 @@ void G_Dismember( gentity_t *ent, gentity_t *enemy, vec3_t point, int limbType, 
 	limb->think = LimbThink;
 	limb->touch = LimbTouch;
 	limb->speed = level.time + Q_irand(8000, 16000);
-	limb->nextthink = level.time + FRAMETIME;
+	limb->nextthink = level.time + level.frameTime;
 
 	limb->r.svFlags = SVF_USE_CURRENT_ORIGIN;
 	limb->clipmask = MASK_SOLID;

@@ -603,7 +603,7 @@ void SP_trigger_multiple( gentity_t *ent )
 	G_SpawnInt("delay", "0", &ent->delay);
 
 	if ( (ent->wait > 0) && (ent->random >= ent->wait) ) {
-		ent->random = ent->wait - FRAMETIME;
+		ent->random = ent->wait - level.frameTime;
 		Com_Printf(S_COLOR_YELLOW"trigger_multiple has random >= wait\n");
 	}
 
@@ -1055,7 +1055,7 @@ void SP_trigger_push( gentity_t *self ) {
 	}
 
 	self->think = AimAtTarget;
-	self->nextthink = level.time + FRAMETIME;
+	self->nextthink = level.time + level.frameTime;
 	trap_LinkEntity (self);
 }
 
@@ -1105,7 +1105,7 @@ void SP_target_push( gentity_t *self ) {
 		VectorCopy( self->s.origin, self->r.absmin );
 		VectorCopy( self->s.origin, self->r.absmax );
 		self->think = AimAtTarget;
-		self->nextthink = level.time + FRAMETIME;
+		self->nextthink = level.time + level.frameTime;
 	}
 	self->use = Use_target_push;
 }
@@ -1267,7 +1267,7 @@ void hurt_touch( gentity_t *self, gentity_t *other, trace_t *trace ) {
 	if ( self->spawnflags & 16 ) {
 		self->timestamp = level.time + 1000;
 	} else {
-		self->timestamp = level.time + FRAMETIME;
+		self->timestamp = level.time + level.frameTime;
 	}
 
 	if (self->spawnflags & 8)
@@ -1674,7 +1674,7 @@ void SP_func_timer( gentity_t *self ) {
 	}
 
 	if ( self->spawnflags & 1 ) {
-		self->nextthink = level.time + FRAMETIME;
+		self->nextthink = level.time + level.frameTime;
 		self->activator = self;
 	}
 

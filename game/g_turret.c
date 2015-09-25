@@ -312,10 +312,10 @@ static void turret_aim( gentity_t *self )
 	VectorSet( setAngle, diffPitch, diffYaw, 0 );
 
 	VectorCopy( top->r.currentAngles, top->s.apos.trBase );
-	VectorScale( setAngle, (1000/FRAMETIME), top->s.apos.trDelta );
+	VectorScale(setAngle, (1000 / level.frameTime), top->s.apos.trDelta);
 	top->s.apos.trTime = level.time;
 	top->s.apos.trType = TR_LINEAR_STOP;
-	top->s.apos.trDuration = FRAMETIME;
+	top->s.apos.trDuration = level.frameTime;
 
 	if ( diffYaw || diffPitch )
 	{
@@ -497,7 +497,7 @@ void turret_base_think( gentity_t *self )
 		// I'm all hot and bothered
 		self->flags &= ~FL_NOTARGET;
 		//remember to keep thinking!
-		self->nextthink = level.time + FRAMETIME;
+		self->nextthink = level.time + level.frameTime;
 	}
 
 	if ( !self->enemy )
@@ -650,7 +650,7 @@ void SP_misc_turret( gentity_t *base )
 	base->use = turret_base_use;
 	base->think = turret_base_think;
 	// don't start working right away
-	base->nextthink = level.time + FRAMETIME * 5;
+	base->nextthink = level.time + level.frameTime * 5;
 
 	trap_LinkEntity( base );
 

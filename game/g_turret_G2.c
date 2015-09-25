@@ -784,7 +784,7 @@ void turretG2_base_think( gentity_t *self )
 	float		enemyDist;
 	vec3_t		enemyDir, org, org2;
 
-	self->nextthink = level.time + FRAMETIME;
+	self->nextthink = level.time + level.frameTime;
 
 	if ( self->health <= 0 )
 	{//dead
@@ -1066,7 +1066,7 @@ void finish_spawning_turretG2( gentity_t *base )
 
 	// don't start working right away
 	base->think = turretG2_base_think;
-	base->nextthink = level.time + FRAMETIME * 5;
+	base->nextthink = level.time + level.frameTime * 5;
 
 	// this is really the pitch angle.....
 	base->speed = 0;

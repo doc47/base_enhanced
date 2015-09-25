@@ -1453,7 +1453,7 @@ void SiegeItemThink(gentity_t *ent)
 		ent->s.time2 = 0;
 	}
 
-	ent->nextthink = level.time + FRAMETIME/2;
+	ent->nextthink = level.time + level.frameTime / 2;
 }
 
 void SiegeItemTouch( gentity_t *self, gentity_t *other, trace_t *trace )
@@ -1587,7 +1587,7 @@ void SiegeItemUse(gentity_t *ent, gentity_t *other, gentity_t *activator)
 	}
 
 	ent->think = SiegeItemThink;
-	ent->nextthink = level.time + FRAMETIME/2;
+	ent->nextthink = level.time + level.frameTime / 2;
 
 	//take off nodraw
 	ent->s.eFlags &= ~EF_NODRAW;
@@ -1806,7 +1806,7 @@ void SP_misc_siege_item (gentity_t *ent)
 		}
 
 		ent->think = SiegeItemThink;
-		ent->nextthink = level.time + FRAMETIME/2;
+		ent->nextthink = level.time + level.frameTime / 2;
 	}
 
 	ent->genericValue8 = ENTITYNUM_NONE; //initialize the carrier to none

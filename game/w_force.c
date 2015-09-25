@@ -2310,7 +2310,7 @@ int ForceShootDrain( gentity_t *self )
 
 void ForceJumpCharge( gentity_t *self, usercmd_t *ucmd )
 { //I guess this is unused now. Was used for the "charge" jump type.
-	float forceJumpChargeInterval = forceJumpStrength[0] / (FORCE_JUMP_CHARGE_TIME/FRAMETIME);
+	float forceJumpChargeInterval = forceJumpStrength[0] / (FORCE_JUMP_CHARGE_TIME / level.frameTime);
 
 	if ( self->health <= 0 )
 	{
@@ -2359,10 +2359,10 @@ void ForceJumpCharge( gentity_t *self, usercmd_t *ucmd )
 	}
 
 	//clamp to max available force power
-	if ( self->client->ps.fd.forceJumpCharge/forceJumpChargeInterval/(FORCE_JUMP_CHARGE_TIME/FRAMETIME)*forcePowerNeeded[self->client->ps.fd.forcePowerLevel[FP_LEVITATION]][FP_LEVITATION] > self->client->ps.fd.forcePower )
+	if (self->client->ps.fd.forceJumpCharge / forceJumpChargeInterval / (FORCE_JUMP_CHARGE_TIME / level.frameTime)*forcePowerNeeded[self->client->ps.fd.forcePowerLevel[FP_LEVITATION]][FP_LEVITATION] > self->client->ps.fd.forcePower)
 	{//can't use more than you have
 		G_MuteSound(self->client->ps.fd.killSoundEntIndex[TRACK_CHANNEL_1-50], CHAN_VOICE);
-		self->client->ps.fd.forceJumpCharge = self->client->ps.fd.forcePower*forceJumpChargeInterval/(FORCE_JUMP_CHARGE_TIME/FRAMETIME);
+		self->client->ps.fd.forceJumpCharge = self->client->ps.fd.forcePower*forceJumpChargeInterval / (FORCE_JUMP_CHARGE_TIME / level.frameTime);
 	}
 	
 }
@@ -2476,7 +2476,7 @@ void ForceJump( gentity_t *self, usercmd_t *ucmd )
 
 	self->client->fjDidJump = qtrue;
 
-	forceJumpChargeInterval = forceJumpStrength[self->client->ps.fd.forcePowerLevel[FP_LEVITATION]]/(FORCE_JUMP_CHARGE_TIME/FRAMETIME);
+	forceJumpChargeInterval = forceJumpStrength[self->client->ps.fd.forcePowerLevel[FP_LEVITATION]] / (FORCE_JUMP_CHARGE_TIME / level.frameTime);
 
 	WP_GetVelocityForForceJump( self, jumpVel, ucmd );
 
@@ -2485,7 +2485,7 @@ void ForceJump( gentity_t *self, usercmd_t *ucmd )
 	VectorCopy( jumpVel, self->client->ps.velocity );
 	//wasn't allowing them to attack when jumping, but that was annoying
 
-	WP_ForcePowerStart( self, FP_LEVITATION, self->client->ps.fd.forceJumpCharge/forceJumpChargeInterval/(FORCE_JUMP_CHARGE_TIME/FRAMETIME)*forcePowerNeeded[self->client->ps.fd.forcePowerLevel[FP_LEVITATION]][FP_LEVITATION] );
+	WP_ForcePowerStart(self, FP_LEVITATION, self->client->ps.fd.forceJumpCharge / forceJumpChargeInterval / (FORCE_JUMP_CHARGE_TIME / level.frameTime)*forcePowerNeeded[self->client->ps.fd.forcePowerLevel[FP_LEVITATION]][FP_LEVITATION]);
 	self->client->ps.fd.forceJumpCharge = 0;
 	self->client->ps.forceJumpFlip = qtrue;
 }

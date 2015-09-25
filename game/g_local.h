@@ -41,7 +41,7 @@ extern vec3_t gPainPoint;
 #define Q3INFINITE			1000000
 #endif
 
-#define	FRAMETIME			100					// msec
+#define	DEFAULT_FRAMETIME	100					// msec
 #define	CARNAGE_REWARD_TIME	3000
 #define REWARD_SPRITE_TIME	2000
 
@@ -49,12 +49,12 @@ extern vec3_t gPainPoint;
 #define	SP_INTERMISSION_DELAY_TIME	5000
 
 //primarily used by NPCs
-#define	START_TIME_LINK_ENTS		FRAMETIME*1 // time-delay after map start at which all ents have been spawned, so can link them
-#define	START_TIME_FIND_LINKS		FRAMETIME*2 // time-delay after map start at which you can find linked entities
-#define	START_TIME_MOVERS_SPAWNED	FRAMETIME*2 // time-delay after map start at which all movers should be spawned
-#define	START_TIME_REMOVE_ENTS		FRAMETIME*3 // time-delay after map start to remove temporary ents
-#define	START_TIME_NAV_CALC			FRAMETIME*4 // time-delay after map start to connect waypoints and calc routes
-#define	START_TIME_FIND_WAYPOINT	FRAMETIME*5 // time-delay after map start after which it's okay to try to find your best waypoint
+#define	START_TIME_LINK_ENTS		DEFAULT_FRAMETIME*1 // time-delay after map start at which all ents have been spawned, so can link them
+#define	START_TIME_FIND_LINKS		DEFAULT_FRAMETIME*2 // time-delay after map start at which you can find linked entities
+#define	START_TIME_MOVERS_SPAWNED	DEFAULT_FRAMETIME*2 // time-delay after map start at which all movers should be spawned
+#define	START_TIME_REMOVE_ENTS		DEFAULT_FRAMETIME*3 // time-delay after map start to remove temporary ents
+#define	START_TIME_NAV_CALC			DEFAULT_FRAMETIME*4 // time-delay after map start to connect waypoints and calc routes
+#define	START_TIME_FIND_WAYPOINT	DEFAULT_FRAMETIME*5 // time-delay after map start after which it's okay to try to find your best waypoint
 
 // gentity->flags
 #define	FL_GODMODE				0x00000010
@@ -918,6 +918,7 @@ typedef struct {
 	int			framenum;
 	int			time;					// in msec
 	int			previousTime;			// so movers can back up when blocked
+	int			frameTime;
 
 	int			startTime;				// level.time the map was started
 
@@ -1341,7 +1342,7 @@ void trigger_teleporter_touch (gentity_t *self, gentity_t *other, trace_t *trace
 // g_misc.c
 //
 #define MAX_REFNAME	32
-#define	START_TIME_LINK_ENTS		FRAMETIME*1
+#define	START_TIME_LINK_ENTS		DEFAULT_FRAMETIME*1
 
 #define	RTF_NONE	0
 #define	RTF_NAVGOAL	0x00000001

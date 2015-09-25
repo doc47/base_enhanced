@@ -1783,7 +1783,7 @@ void MoveOwner( gentity_t *self )
 {
 	gentity_t *owner = &g_entities[self->r.ownerNum];
 
-	self->nextthink = level.time + FRAMETIME;
+	self->nextthink = level.time + level.frameTime;
 	self->think = G_FreeEntity;
 
 	if ( !owner || !owner->inuse )
@@ -1823,7 +1823,7 @@ static qboolean Q3_SetTeleportDest( int entID, vec3_t org )
 			teleporter->r.ownerNum = teleEnt->s.number;
 
 			teleporter->think = MoveOwner;
-			teleporter->nextthink = level.time + FRAMETIME;
+			teleporter->nextthink = level.time + level.frameTime;
 			
 			return qfalse;
 		}
@@ -4044,7 +4044,7 @@ void SolidifyOwner( gentity_t *self )
 	int oldContents;
 	gentity_t *owner = &g_entities[self->r.ownerNum];
 
-	self->nextthink = level.time + FRAMETIME;
+	self->nextthink = level.time + level.frameTime;
 	self->think = G_FreeEntity;
 
 	if ( !owner || !owner->inuse )
@@ -4094,7 +4094,7 @@ static qboolean Q3_SetSolid( int entID, qboolean solid)
 			solidifier->r.ownerNum = ent->s.number;
 
 			solidifier->think = SolidifyOwner;
-			solidifier->nextthink = level.time + FRAMETIME;
+			solidifier->nextthink = level.time + level.frameTime;
 			
 			ent->r.contents = oldContents;
 			return qfalse;

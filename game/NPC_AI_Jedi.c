@@ -3010,7 +3010,7 @@ static qboolean Jedi_SaberBlock( int saberNum, int bladeNum ) //saberNum = 0, bl
 	
 	if ( d_JediAI.integer )
 	{
-		G_TestLine(saberPoint, hitloc, 0x0000ff, FRAMETIME);
+		G_TestLine(saberPoint, hitloc, 0x0000ff, level.frameTime);
 	}
 
 	//FIXME: if saber is off and/or we have force speed and want to be really cocky, 

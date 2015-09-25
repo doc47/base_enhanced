@@ -903,7 +903,7 @@ static GAME_INLINE void G_G2PlayerAngles( gentity_t *ent, vec3_t legs[3], vec3_t
 		}
 
 		BG_G2PlayerAngles(ent->ghoul2, ent->client->renderInfo.motionBolt, &ent->s, level.time, lerpOrg, lerpAng, legs,
-			legsAngles, &tYawing, &tPitching, &lYawing, &tYawAngle, &tPitchAngle, &lYawAngle, FRAMETIME, turAngles,
+			legsAngles, &tYawing, &tPitching, &lYawing, &tYawAngle, &tPitchAngle, &lYawAngle, level.frameTime, turAngles,
 			ent->modelScale, ciLegs, ciTorso, &ent->client->corrTime, lookAngles, ent->client->lastHeadAngles,
 			ent->client->lookTime, emplaced, NULL);
 
@@ -8388,7 +8388,7 @@ nextStep:
 				//Projectile stuff:
 				AngleVectors(self->client->ps.viewangles, dir, NULL, NULL);
 
-				saberent->nextthink = level.time + FRAMETIME;
+				saberent->nextthink = level.time + level.frameTime;
 				saberent->think = saberFirstThrown;
 
 				saberent->damage = SABER_THROWN_HIT_DAMAGE;

@@ -1010,7 +1010,7 @@ void NPC_Begin (gentity_t *ent)
 
 	ent->use   = NPC_Use;
 	ent->think = NPC_Think;
-	ent->nextthink = level.time + FRAMETIME + Q_irand(0, 100);
+	ent->nextthink = level.time + level.frameTime + Q_irand(0, 100);
 
 	NPC_SetMiscDefaultData( ent );
 	if ( ent->health <= 0 )
@@ -1527,7 +1527,7 @@ gentity_t *NPC_Spawn_Do( gentity_t *client_ent, gentity_t *ent )
 	newent->s.eFlags |= EF_NODRAW;//So he's ignored until he's fully spawned
 
 	newent->think = NPC_Begin;
-	newent->nextthink = level.time + FRAMETIME;
+	newent->nextthink = level.time + level.frameTime;
 	NPC_DefaultScriptFlags( newent );
 
 	//copy over team variables, too
@@ -3632,7 +3632,7 @@ gentity_t *NPC_SpawnType( gentity_t *ent, char *npc_type, char *targetname, qboo
 	}
 
 	NPCspawner->think = G_FreeEntity;
-	NPCspawner->nextthink = level.time + FRAMETIME;
+	NPCspawner->nextthink = level.time + level.frameTime;
 	
 	if ( !npc_type )
 	{

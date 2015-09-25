@@ -715,7 +715,7 @@ void NPC_BSRemove (void)
 
 		//Disappear in half a second
 		NPC->think = G_FreeEntity;
-		NPC->nextthink = level.time + FRAMETIME;
+		NPC->nextthink = level.time + level.frameTime;
 	}//FIXME: else allow for out of FOV???
 }
 

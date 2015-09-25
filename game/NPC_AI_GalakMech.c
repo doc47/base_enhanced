@@ -212,7 +212,7 @@ void GM_Dying( gentity_t *self )
 	else
 	{//one final, huge explosion
 		G_PlayEffectID( G_EffectIndex("galak/explode"), self->r.currentOrigin, vec3_origin );
-		self->nextthink = level.time + FRAMETIME;
+		self->nextthink = level.time + level.frameTime;
 		self->think = G_FreeEntity;
 	}
 }

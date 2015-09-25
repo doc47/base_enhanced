@@ -84,7 +84,7 @@ void G_RunObject( gentity_t *ent )
 		}
 	}
 
-	ent->nextthink = level.time + FRAMETIME;
+	ent->nextthink = level.time + level.frameTime;
 
 	VectorCopy( ent->r.currentOrigin, oldOrg );
 	// get current position
@@ -236,7 +236,7 @@ void G_StartObjectMoving( gentity_t *object, vec3_t dir, float speed, trType_t t
 	//FIXME: make these objects go through G_RunObject automatically, like missiles do
 	if ( object->think == NULL )
 	{
-		object->nextthink = level.time + FRAMETIME;
+		object->nextthink = level.time + level.frameTime;
 		object->think = G_RunObject;
 	}
 	else
