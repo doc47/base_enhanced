@@ -2410,7 +2410,7 @@ void laserTrapThink ( gentity_t *ent )
 		ent->s.eFlags |= EF_FIRING;
 	}
 	ent->think = laserTrapThink;
-	ent->nextthink = level.time + FRAMETIME;
+	ent->nextthink = level.time;
 
 	// Find the main impact point
 	VectorMA ( ent->s.pos.trBase, 1024, ent->movedir, end );
