@@ -1653,11 +1653,11 @@ void NPC_Think ( gentity_t *self)//, int msec )
 
 		if ( NPC->s.weapon == WP_SABER && g_spskill.integer >= 2 && NPCInfo->rank > RANK_LT_JG )
 		{//Jedi think faster on hard difficulty, except low-rank (reborn)
-			NPCInfo->nextBStateThink = level.time + level.frameTime / 2;
+			NPCInfo->nextBStateThink = level.time + level.frameTime;
 		}
 		else
 		{//Maybe even 200 ms?
-			NPCInfo->nextBStateThink = level.time + level.frameTime;
+			NPCInfo->nextBStateThink = level.time + level.frameTime*2;
 		}
 
 		//nextthink is set before this so something in here can override it
