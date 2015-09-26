@@ -641,6 +641,7 @@ static qboolean pas_find_enemies( gentity_t *self )
 		if ( target->client )
 		{
 			VectorCopy( target->client->ps.origin, org );
+			org[2] += target->client->ps.viewheight;
 		}
 		else
 		{
