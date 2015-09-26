@@ -119,6 +119,7 @@ vmCvar_t	g_fraglimitVoteCorrection;
 vmCvar_t	g_fraglimit;
 vmCvar_t	g_duel_fraglimit;
 vmCvar_t	g_timelimit;
+vmCvar_t	g_overtimeLimit;
 vmCvar_t	g_capturelimit;
 vmCvar_t	g_capturedifflimit;
 vmCvar_t	d_saberInterpolate;
@@ -409,6 +410,7 @@ static cvarTable_t		gameCvarTable[] = {
     { &g_fraglimit, "fraglimit", "20", CVAR_SERVERINFO | CVAR_ARCHIVE | CVAR_NORESTART, 0, qtrue },
     { &g_duel_fraglimit, "duel_fraglimit", "10", CVAR_SERVERINFO | CVAR_ARCHIVE | CVAR_NORESTART, 0, qtrue },
     { &g_timelimit, "timelimit", "0", CVAR_SERVERINFO | CVAR_ARCHIVE | CVAR_NORESTART, 0, qtrue },
+	{ &g_overtimeLimit, "overtimelimit", "0", CVAR_SERVERINFO | CVAR_ARCHIVE | CVAR_NORESTART, 0, qtrue },	
     { &g_capturelimit, "capturelimit", "8", CVAR_SERVERINFO | CVAR_ARCHIVE | CVAR_NORESTART, 0, qtrue },
     { &g_capturedifflimit, "capturedifflimit", "0", CVAR_SERVERINFO | CVAR_ARCHIVE | CVAR_NORESTART, 0, qtrue },
 
@@ -3177,7 +3179,15 @@ void CheckExitRules( void ) {
 
 			//log we came overtime
 			if ( level.time - level.startTime >= g_timelimit.integer*60000 ){
-				level.overtime = qtrue;
+				level.overtime = qtrue;	
+
+				if ((level.time - level.startTime >= (g_timelimit.integer + level.overtimeLimit) * 60000) && g_overtimeLimit.integer)
+				{
+					level.overtimeLimit += g_overtimeLimit.integer;
+					trap_SendServerCommand(-1, va("print \"Score tied, extending timelimit by %i minutes (%i:00).\n\"",
+						g_overtimeLimit.integer, g_timelimit.integer + level.overtimeLimit));
+
+				}
 			}
 
 			// always wait for sudden death
@@ -3194,7 +3204,7 @@ void CheckExitRules( void ) {
 	if (g_gametype.integer != GT_SIEGE)
 	{
 		if ( g_timelimit.integer && !level.warmupTime ) {
-			if ( level.time - level.startTime >= g_timelimit.integer*60000 ) {
+			if ((level.time - level.startTime >= (g_timelimit.integer + level.overtimeLimit) * 60000)) {
 				trap_SendServerCommand( -1, va("print \"%s.\n\"",G_GetStringEdString("MP_SVGAME", "TIMELIMIT_HIT")));
 				if (d_powerDuelPrint.integer)
 				{

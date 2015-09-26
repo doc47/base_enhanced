@@ -922,6 +922,8 @@ typedef struct {
 
 	int			startTime;				// level.time the map was started
 
+	int			overtimeLimit;
+
 	int			teamScores[TEAM_NUM_TEAMS];
 	int			lastTeamLocationTime;		// last time of client team location update
 
@@ -1724,6 +1726,7 @@ extern	vmCvar_t	g_duelWeaponDisable;
 extern	vmCvar_t	g_fraglimit;
 extern	vmCvar_t	g_duel_fraglimit;
 extern	vmCvar_t	g_timelimit;
+extern	vmCvar_t	g_overtimeLimit;
 extern	vmCvar_t	g_capturelimit;
 extern	vmCvar_t	g_capturedifflimit;
 extern	vmCvar_t	d_saberInterpolate;
