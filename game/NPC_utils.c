@@ -1029,7 +1029,7 @@ qboolean NPC_ValidEnemy( gentity_t *ent )
 	}
 	else if ( ent->client )
 	{
-		if (g_gametype.integer < GT_TEAM)
+		if (g_gametype.integer != GT_SIEGE)
 		{
 			entTeam = NPCTEAM_PLAYER;
 		}
@@ -1050,7 +1050,7 @@ qboolean NPC_ValidEnemy( gentity_t *ent )
 		}
 	}
 	//Can't be on the same team
-	if ( ent->client->playerTeam == NPC->client->playerTeam )
+	if (entTeam == NPC->client->playerTeam)
 		return qfalse;
 
 	//if haven't seen him in a while, give up
