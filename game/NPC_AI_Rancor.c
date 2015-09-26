@@ -449,15 +449,18 @@ void Rancor_Attack( float distance, qboolean doCharge )
 		}
 		else if ( NPC->enemy->health > 0 && doCharge )
 		{//charge
-			vec3_t	fwd, yawAng;
-			VectorSet( yawAng, 0, NPC->client->ps.viewangles[YAW], 0 );
-			AngleVectors( yawAng, fwd, NULL, NULL );
-			VectorScale( fwd, distance*1.5f, NPC->client->ps.velocity );
-			NPC->client->ps.velocity[2] = 150;
-			NPC->client->ps.groundEntityNum = ENTITYNUM_NONE;
+			if (NPC_MoveToGoal(qtrue))
+			{
+				vec3_t	fwd, yawAng;
+				VectorSet( yawAng, 0, NPC->client->ps.viewangles[YAW], 0 );
+				AngleVectors( yawAng, fwd, NULL, NULL );
+				VectorScale( fwd, distance*1.5f, NPC->client->ps.velocity );
+				NPC->client->ps.velocity[2] = 150;
+				NPC->client->ps.groundEntityNum = ENTITYNUM_NONE;
 
-			NPC_SetAnim( NPC, SETANIM_BOTH, BOTH_MELEE2, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD );
-			TIMER_Set( NPC, "attack_dmg", 1250 );
+				NPC_SetAnim( NPC, SETANIM_BOTH, BOTH_MELEE2, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_HOLD );
+				TIMER_Set( NPC, "attack_dmg", 1250 );
+			}
 		}
 		else if ( !Q_irand(0, 1) )
 		{//smash
