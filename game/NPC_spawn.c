@@ -3800,6 +3800,11 @@ void NPC_Spawn_f( gentity_t *ent )
 	NPC_SpawnType( ent, npc_type, targetname, isVehicle );
 }
 
+void NPC_SpawnList_f(gentity_t *ent)
+{
+	NPC_List(ent);
+}
+
 /*
 NPC_Kill_f
 */
@@ -3958,6 +3963,10 @@ void Cmd_NPC_f( gentity_t *ent )
 	else if ( Q_stricmp( cmd, "spawn" ) == 0 )
 	{
 		NPC_Spawn_f( ent );
+	}
+	else if (Q_stricmp(cmd, "spawnlist") == 0)
+	{
+		NPC_SpawnList_f(ent);
 	}
 	else if ( Q_stricmp( cmd, "kill" ) == 0 ) 
 	{

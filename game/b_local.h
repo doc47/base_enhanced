@@ -180,6 +180,7 @@ extern qboolean InVisrange ( gentity_t *ent );
 extern void NPC_Spawn ( gentity_t *ent, gentity_t *other, gentity_t *activator );
 
 //NPC_stats
+extern void NPC_List(gentity_t *ent);
 extern int NPC_ReactionTime ( void );
 extern qboolean NPC_ParseParms( const char *NPCName, gentity_t *NPC );
 extern void NPC_LoadParms( void );

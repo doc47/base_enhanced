@@ -825,6 +825,60 @@ void NPC_BuildRandom( gentity_t *NPC )
 }
 #endif
 
+void NPC_List(gentity_t *ent)
+{
+	const char	*token;
+	const char	*p;
+	static char buffer[4096];
+	char* bufferPtr;
+	int actualSize;
+	const int maximalSize = 900; // keep some reserve
+
+
+	p = NPCParms;
+	COM_BeginParseSession(NPCFile);
+
+	bufferPtr = buffer;
+	actualSize = 0;
+
+	trap_SendServerCommand(ent - g_entities, "print \"NPC spawn list:\"");
+	
+	// look for the right NPC
+	while (p)
+	{
+		int len;
+		char* entry;
+		token = COM_ParseExt(&p, qtrue);
+
+		if (token[0] == 0)
+		{
+			break;
+		}	
+
+		entry = va(" %s\n", token);
+		len = strlen(entry);
+
+		Q_strncpyz(bufferPtr, entry, sizeof(buffer) - actualSize);
+		bufferPtr += len;
+		actualSize += len;
+
+		if (actualSize >= maximalSize)
+		{
+			trap_SendServerCommand(ent - g_entities, va("print \"%s\"", buffer));
+			bufferPtr = buffer;
+			actualSize = 0;
+		}
+		
+		SkipBracedSection(&p);
+	}
+
+	// something left to print
+	if (actualSize)
+	{
+		trap_SendServerCommand(ent - g_entities, va("print \"%s\"", buffer));
+	}
+}
+
 extern void SetupGameGhoul2Model(gentity_t *ent, char *modelname, char *skinName);
 qboolean NPC_ParseParms( const char *NPCName, gentity_t *NPC ) 
 {
