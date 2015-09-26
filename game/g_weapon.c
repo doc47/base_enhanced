@@ -884,6 +884,9 @@ void WP_DisruptorAltFire( gentity_t *ent )
 					traceEnt->client->ps.legsAnim = preLegs;
 					traceEnt->client->ps.torsoAnim = preTorso;
 
+					traceEnt->client->ps.legsTimer = 0;
+					traceEnt->client->ps.torsoTimer = 0;
+
 					traceEnt->r.contents = 0;
 
 					VectorClear(traceEnt->client->ps.velocity);
