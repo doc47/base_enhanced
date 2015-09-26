@@ -1553,7 +1553,7 @@ void NPC_Think ( gentity_t *self)//, int msec )
 	int i = 0;
 	gentity_t *player;
 
-	self->nextthink = level.time + level.frameTime;
+	self->nextthink = level.time + level.frameTime*2;
 
 	SetNPCGlobals( self );
 
@@ -1592,7 +1592,7 @@ void NPC_Think ( gentity_t *self)//, int msec )
 		return;
 	}
 
-	self->nextthink = level.time + level.frameTime / 2;
+	self->nextthink = level.time + level.frameTime;
 
 
 	while (i < MAX_CLIENTS)
