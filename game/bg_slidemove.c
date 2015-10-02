@@ -569,7 +569,8 @@ qboolean PM_ClientImpact( trace_t *trace )
 
 	if( VectorLength( pm->ps->velocity ) >= 100 
 		&& pm_entSelf->s.NPC_class != CLASS_VEHICLE
-		&& pm->ps->lastOnGround+100 < level.time )
+		&& pm->ps->lastOnGround+100 < level.time
+		&& trace->fraction > 0.0F)
 		//&& pm->ps->groundEntityNum == ENTITYNUM_NONE )
 	{
 		Client_CheckImpactBBrush( (gentity_t *)(pm_entSelf), &g_entities[otherEntityNum] );
